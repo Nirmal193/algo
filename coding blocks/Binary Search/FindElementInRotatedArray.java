@@ -1,6 +1,6 @@
 import java.util.Scanner;
-public class Main {
-    public static void FindElementInRotatedArray(String args[]) {
+public class FindElementInRotatedArray {
+    public static void main(String args[]) {
        Scanner scan=new Scanner(System.in);
        int n=scan.nextInt();
        int arr[]=new int[n];
