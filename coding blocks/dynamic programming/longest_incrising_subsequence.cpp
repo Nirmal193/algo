@@ -32,7 +32,7 @@ using namespace std;
 #define ALL(V) V.begin(), V.end()
 #define IN(A, B, C)  ((B) <= (A) && (A) <= (C))
 #define mod 10000000007
-#define pb push_back
+#define pb push_back	`
 
 typedef pair<int,int> PII;
 typedef pair<double, double> PDD;
@@ -50,36 +50,29 @@ int power(int x, unsigned int y)
     else
         return x * power(x, y / 2) * power(x, y / 2);
 }
-int max_sum_without_adjcent_element(vector<vector<int>> A){
-	int len = A[0].size();
-	vector<int> B;
-	for(int i=0;i<len;i++){
-		B.push_back(MAX(A[0][i],A[1][i]));
+
+int lcs(string A,string B){
+	int m = A.length();
+	int n = B.length();
+	int dp[m+1][n+1] = {0};
+	for(int i = 0;i<=m;i++)
+		dp[i][0] = 0;
+	for(int i=0;i<=n;i++)
+		dp[0][i] = 0;
+	for(int i=1;i<=m ;i++){
+		for(int j =i;j<=n;j++){
+			if(A[i-1] == B[j-1])
+				dp[i][j] = dp[i-1][j-1]+1;
+			else{
+				dp[i][j] = MAX(dp[i][j-1],dp[i-1][j]);
+			}
+		}
 	}
-	int dp[len];
-	memset(dp,0,sizeof(dp[0])*len);
-	dp[0] = B[0];
-	dp[1] = MAX(B[0],B[1]);
-	for(int i=2;i<len;i++){
-		dp[i] = MAX(dp[i-1],B[i]+dp[i-2]);
-	}
-	return dp[len-1];
+	return dp[m][n];
 }
-int main(){rex193
- 	// freopen("input.txt","r",stdin);
-  //   freopen("output.txt","w",stdout);
-    int n,m;
-    cin>>n;
-    int input;
-    vector<vector<int>> A;
-    for(int i=0;i<2;i++){
-    	vector<int> temp;
-    	for(int j=0;i<m;j++){
-    		cin>>input;
-    		temp.push_back(input);
-    	}
-    	A.push_back(temp);
-    	temp.clear();
-    }
-	return 0;
+int main(){
+  string A,B;
+  cin>>A>>B;
+  cout<<lcs(A,B)<<endl;
+  return 0;
 }

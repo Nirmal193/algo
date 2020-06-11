@@ -32,7 +32,7 @@ using namespace std;
 #define ALL(V) V.begin(), V.end()
 #define IN(A, B, C)  ((B) <= (A) && (A) <= (C))
 #define mod 10000000007
-#define pb push_back
+#define pb push_back	`
 
 typedef pair<int,int> PII;
 typedef pair<double, double> PDD;
@@ -50,36 +50,35 @@ int power(int x, unsigned int y)
     else
         return x * power(x, y / 2) * power(x, y / 2);
 }
-int max_sum_without_adjcent_element(vector<vector<int>> A){
-	int len = A[0].size();
-	vector<int> B;
-	for(int i=0;i<len;i++){
-		B.push_back(MAX(A[0][i],A[1][i]));
+
+int **dp;
+int edit_distance(string A,string B,int i,int j,int **dp){
+	if(i<0 || j <0)
+		return MAX(i+1,j+1);
+	if(dp[i][j]!=0)
+		return dp[i][j];
+	if(A[i] == B[j]){
+		dp[i][j] = edit_distance(A,B,i-1,j-1,dp);
+		return dp[i][j];
 	}
-	int dp[len];
-	memset(dp,0,sizeof(dp[0])*len);
-	dp[0] = B[0];
-	dp[1] = MAX(B[0],B[1]);
-	for(int i=2;i<len;i++){
-		dp[i] = MAX(dp[i-1],B[i]+dp[i-2]);
+	else{
+		dp[i][j] = MIN(edit_distance(A,B,i-1,j,dp),MIN(edit_distance(A,B,i-1,j-1,dp),edit_distance(A,B,i,j-1,dp)))+1;
+		return dp[i][j];
 	}
-	return dp[len-1];
 }
-int main(){rex193
- 	// freopen("input.txt","r",stdin);
-  //   freopen("output.txt","w",stdout);
-    int n,m;
-    cin>>n;
-    int input;
-    vector<vector<int>> A;
-    for(int i=0;i<2;i++){
-    	vector<int> temp;
-    	for(int j=0;i<m;j++){
-    		cin>>input;
-    		temp.push_back(input);
-    	}
-    	A.push_back(temp);
-    	temp.clear();
-    }
+int main(){
+ 	freopen("input.txt","r",stdin);
+    freopen("output.txt","w",stdout);
+   	string A,B;
+   	cin>>A>>B;
+   	int m = A.length();
+   	int n = B.length();
+   	dp = new int*[m];
+	for(int i = 0; i < m; i++)
+    	dp[i] = new int[n];
+    for(int i=0;i<m;i++)
+    	for(int j=0;j<n;j++)
+    		dp[i][j] = 0;
+   	cout<<edit_distance(A,B,A.length()-1,B.length()-1,dp)<<endl;
 	return 0;
 }
