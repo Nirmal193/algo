@@ -41,44 +41,57 @@ typedef vector<PII > VP;
 typedef long long ll;
 
 
+int power(int x, unsigned int y)
+{
+    if (y == 0)
+        return 1;
+    else if (y % 2 == 0)
+        return power(x, y / 2) * power(x, y / 2);
+    else
+        return x * power(x, y / 2) * power(x, y / 2);
+}
 
-int longest_balanced_substring(string A){
-	int len = A.size();
-	vector<char> stk;
-	vector<int> dp(len,0);
-	stk.push_back(A[0]);
-	int c = 0;
-	for(int i=1;i<len;i++){
-		if(A[i] == '{' || A[i] == '(' || A[i] =='[')
-			stk.push_back(A[i]);
-		else {
-			if(stk.back() == '(' && A[i] == ')'){
-				c = c+2;
-				stk.pop_back();
-			}
-			else if(stk.back() == '{' && A[i] == '}'){
-				stk.pop_back();
-				c = c+2;
-			}
-			else if(stk.back() == '[' && A[i] == ']'){
-				stk.pop_back();
-				c = c+2;
-			}
-			else{
-				c = 0;
-				stk.clear();
+int solve(string s){
+	int len = s.length();
+	int dp[len][len];
+	memset(dp,0,sizeof dp);
+	for(int i=0;i<len;i++){
+		dp[i][i] = true;
+	}
+	for(int i=0;i<len-1;i++)
+		if(s[i]==s[i+1])
+			dp[i][i+1] = true;
+	for(int i=3;i<=len;i++){
+		for(int j=0;j<=len-i;j++){
+			int l = i+j-1;
+			if(s[j]==s[l])
+				dp[j][l] = dp[j+1][l-1];
+			else
+				dp[j][l] = false;
+		}
+	}
+	vector<int> pal(len,len);
+	pal[len-1]=0;
+	for(int i=len-2;i>=0;i--){
+		if(dp[i][len-1])
+			pal[i]=0;
+		else{
+			for(int j=i;j<len-1;j++){
+				if(dp[i][j])
+					pal[i] = min(pal[i],1+pal[j+1]);
 			}
 		}
-		dp[i] = MAX(dp[i-1],c);
 	}
-	for(int i=0;i<len;i++){
-		cout<<A[i]<<" "<<dp[i]<<endl;
-	}
-	return dp[len-1];
+	for(int i=0;i<len;i++)
+		cout<<pal[i]<<" ";
+	cout<<endl;
+	return pal[0];
 }
 int main(){
-  string A;
-  cin>>A;
-  cout<<longest_balanced_substring(A)<<endl;
-  return 0;
+ 	freopen("input.txt","r",stdin);
+    freopen("output.txt","w",stdout);
+   	string A;
+   	cin>>A;
+   	cout<<solve(A)<<endl;
+	return 0;
 }
